@@ -1,41 +1,159 @@
-# 중고글 뚝딱
+# 뚝딱마켓
 
-중고 물건의 이름과 사용 상태를 입력하면 AI가 판매글 제목과 본문을 작성합니다. 희망 가격, 거래 방법, 구성품도 반영할 수 있습니다. 초안을 수정한 뒤 복사하고, 체크리스트에서 빠진 정보를 확인할 수 있습니다.
+중고 물건의 이름과 사용 상태를 입력하면 AI가 판매글 제목, 본문, 확인할 항목을 작성합니다. 희망 가격, 거래 방법, 구성품도 반영합니다. 초안을 수정하거나 복사할 수 있고, 사진과 함께 저장하면 같은 브라우저의 중고장터와 내 판매글에 표시됩니다.
 
-## 실행
+- [Vercel 운영 주소](https://junggo-ttukttak.vercel.app)
+- [GitHub 저장소](https://github.com/miraean9000-beep/make_www) · [커밋 이력](https://github.com/miraean9000-beep/make_www/commits/main)
+- [Vercel 운영 배포 기록](https://vercel.com/test-studio1/junggo-ttukttak/26iwoqKS6dk5GZQ6eL8DHNd2ggSf)
 
-Python 3.12 이상을 사용합니다.
+| 화면 | 경로 | 기능 |
+| --- | --- | --- |
+| 중고장터 | /listings.html | 상품 카드, 검색, 카테고리 필터 |
+| 판매글 쓰기 | /#write | 물건 정보 및 사진 입력, AI 생성, 초안 편집과 저장 |
+| 내 판매글 | /listings.html#saved | 현재 브라우저에 저장한 판매글 확인 |
+
+2026-11-09에 운영 주소에서 장터와 작성 화면을 열었습니다. 작성 화면에서 독서등 정보를 제출해 실제 AI 응답으로 제목과 본문이 표시되는 것도 확인했습니다.
+
+## 로컬 실행
+
+Python 3.12 이상을 사용합니다. 처음 실행할 때 아래 명령으로 가상환경과 설정 파일을 준비합니다.
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 Copy-Item .env.example .env
+```
+
+.env에 Copa에서 발급한 COPA_API_KEY를 입력하고 아래 명령으로 서버를 시작합니다.
+
+```powershell
 .\.venv\Scripts\python.exe dev.py
 ```
 
-`.env`에 Copa에서 발급한 `COPA_API_KEY`를 입력한 뒤 [로컬 서비스](http://127.0.0.1:8765)를 엽니다. `COPA_MODEL`의 기본값은 `claude-haiku-4`입니다. 키는 Python 서버만 읽으며 Git에는 빈 값이 있는 `.env.example`을 올립니다.
+[로컬 서비스 열기](http://127.0.0.1:8765)
 
-## 구조
+## 구조와 요청 흐름
 
-- `public/index.html`에 홈, 판매글 만들기, 예시 메뉴와 폼을 둡니다.
-- `public/css/style.css`는 화면 너비에 따라 작성 폼과 결과 패널을 가로 또는 세로로 배치합니다.
-- `public/js/app.js`는 입력을 JSON으로 바꾸고 `fetch('/api/listing')`으로 보냅니다. 응답을 편집 필드에 표시하고 복사를 처리합니다.
-- `api/listing.py`는 Vercel의 Python 함수입니다. 입력을 검증하고 Copa의 Claude Messages API에 요청한 뒤 제목, 본문, 체크리스트를 JSON으로 반환합니다.
-- `dev.py`는 동일한 API 핸들러와 정적 파일을 로컬에서 실행합니다.
+| 파일 | 역할 |
+| --- | --- |
+| public/index.html | 작성 폼과 결과 영역을 정의합니다. 레이블과 필수 항목, 브라우저 입력 길이 제한을 지정합니다. |
+| public/listings.html | 장터와 내 판매글 화면, 등록한 상품의 카드 틀을 정의합니다. |
+| public/css/style.css | 장터와 작성 화면에 공통 색상과 여백을 적용합니다. 폭 720px 이하에서 작성 폼과 결과를 한 열로 배치합니다. |
+| public/js/app.js | 입력을 검증하고 API를 호출합니다. 진행 상태와 결과를 표시하고 초안 복사와 저장을 처리합니다. |
+| public/js/listings.js | 저장한 글을 카드로 표시하고 상품 검색과 카테고리 필터를 처리합니다. |
+| public/js/listing-storage.js | 작성 화면과 장터에서 같은 브라우저 저장소를 읽습니다. |
+| api/listing.py | 요청을 검증하고 Copa API를 호출합니다. 모델 응답을 검사한 후 정해진 JSON 형식으로 돌려줍니다. |
+| dev.py / vercel.json | 로컬 서버와 Vercel의 정적 파일 및 API 실행 설정을 각각 담당합니다. |
 
-## Vercel 배포
+```text
+작성 폼 → fetch('/api/listing') → Python 함수 → Copa Claude Messages API
+편집 가능한 초안 ← 제목·본문·체크리스트 JSON ← 응답 검증
+```
 
-배포 URL은 첫 배포가 완료되면 여기에 기록합니다.
+브라우저는 화면 상태를 관리하고 Python 함수는 인증과 입력·응답 검증을 담당합니다. 이 구조로 API 키를 서버에 보관하고, 로컬과 Vercel에서 같은 생성 로직을 사용합니다. 상품과 사진은 브라우저에 저장되며, AI 요청에는 상품의 텍스트 정보만 포함합니다.
 
-1. Vercel에서 이 GitHub 저장소를 새 프로젝트로 가져옵니다. 루트 디렉터리는 저장소 루트입니다.
-2. 프로젝트의 Environment Variables에 `COPA_API_KEY`를 추가합니다. 다른 모델을 쓰는 경우 `COPA_MODEL`도 설정합니다.
-3. Deploy를 실행합니다. `vercel.json`이 정적 파일 디렉터리와 Python 함수 실행 시간을 지정합니다.
-4. 배포 URL에서 메뉴 이동과 예시 입력을 확인한 뒤 실제 판매글을 생성합니다. 설정을 고쳤다면 재배포하고 같은 입력으로 다시 확인합니다.
+## API 계약과 입력 검증
 
-[Vercel Python 함수 문서](https://vercel.com/docs/functions/runtimes/python) · [GitHub 연동 배포 문서](https://vercel.com/docs/git)
+POST /api/listing은 application/json 요청을 받습니다. 선택 항목은 생략할 수 있습니다.
 
-## 제출 자료
+| 필드 | 항목 | 최대 글자 수 | 필수 |
+| --- | --- | ---: | --- |
+| item | 물건 이름 | 80 | 예 |
+| condition | 사용 상태 | 500 | 예 |
+| price | 희망 가격 | 30 | 선택 |
+| delivery | 거래 방법 | 80 | 선택 |
+| details | 구성품 및 기타 정보 | 500 | 선택 |
+
+브라우저는 maxlength로 입력 길이를 제한하고, 앞뒤 공백을 제거한 후 필수값을 확인합니다. 서버는 요청 본문을 최대 12,000바이트까지 받고 각 필드의 문자열 타입과 길이를 다시 검사합니다. 길이를 초과하면 서버는 입력을 잘라 쓰지 않고 400과 안내 메시지를 반환합니다. 공백뿐인 필수값도 400으로 처리합니다.
+
+성공 응답은 HTTP 200이며 아래는 응답 형식 예시입니다.
+
+```json
+{
+  "title": "받침에 작은 흠집 있는 독서등 판매",
+  "body": "정상 작동하는 독서등입니다. 받침에 작은 흠집이 있습니다. 1만 원에 직거래합니다.",
+  "checklist": ["직거래 가능 지역을 확인해 주세요."]
+}
+```
+
+| 필드 | 타입 | 검증 범위 |
+| --- | --- | --- |
+| title | 문자열 | 앞뒤 공백을 제외하고 1~180자 |
+| body | 문자열 | 앞뒤 공백을 제외하고 1~2,200자 |
+| checklist | 문자열 배열 | 0~5개, 각 항목은 앞뒤 공백을 제외하고 1~200자 |
+
+## 화면 상태와 오류 처리
+
+생성 요청 중에는 버튼을 비활성화하고 “AI가 판매글을 작성하는 중입니다.”를 표시합니다. 성공하면 제목과 본문을 편집할 수 있고, 확인할 정보가 있을 때 체크리스트를 보여줍니다.
+
+| 상황 | 동작 |
+| --- | --- |
+| 필수 항목 누락 | 입력 안내를 표시하고 해당 입력란에 초점을 둡니다. |
+| 400 · 잘못된 요청 또는 입력 | 입력 내용을 확인하라는 서버 안내를 표시합니다. 수정한 뒤 다시 생성합니다. |
+| 405 · 잘못된 HTTP 메서드 | POST를 사용하라는 응답을 반환합니다. |
+| 502 · Copa 오류 또는 모델 응답 형식 오류 | 생성 실패를 표시하고 잠시 후 재시도를 안내합니다. |
+| 503 · 서버 키 미설정 | 설정 확인 안내를 표시합니다. 운영자는 Vercel 환경변수를 확인합니다. |
+| 504 또는 브라우저 대기 만료 | 응답 지연을 안내합니다. 입력값을 유지해 같은 내용으로 다시 시도할 수 있습니다. |
+| 브라우저 네트워크 연결 실패 | 서버에 연결하지 못했다는 안내를 표시합니다. 연결이 복구되면 사용자가 다시 생성할 수 있습니다. |
+
+재시도는 수동으로 합니다. 한 번의 생성 요청으로 Copa를 한 번 호출하며, 자동 재시도나 백오프는 적용하지 않습니다.
+
+## 프롬프트와 응답 시간
+
+시스템 프롬프트는 입력 JSON을 상품 정보로만 취급하도록 하고, 흠집과 누락된 구성품도 본문에 반영하도록 지시합니다. 가격과 거래 장소 등 입력에 없는 정보는 임의로 만들지 않고 확인 항목으로 남깁니다. 연락처와 상세 주소는 초안에서 제외하도록 지시합니다. JSON 형식과 확인 항목 개수를 프롬프트에 지정하고, 서버에서도 실제 응답을 검증합니다.
+
+문체를 바꿀 때는 시스템 프롬프트의 제목·본문 지시를 수정합니다. 모델 변경은 COPA_MODEL로 설정하며, 현재 별도 temperature 값은 지정하지 않습니다. 모델이나 프롬프트를 바꾼 뒤에는 동일한 입력으로 사실 누락, 없는 정보 추가, JSON 파싱 실패를 비교합니다.
+
+| 구간 | 현재 설정 |
+| --- | --- |
+| 브라우저 요청 | 29초 후 중단 |
+| Python → Copa | 연결 5초, 읽기 19초 |
+| Vercel 함수 | 최대 실행 시간 30초 |
+| 모델과 출력 | 기본 claude-haiku-4, 최대 출력 1,000토큰 |
+
+현재는 경량 모델, 입력 길이 제한, 출력 토큰 제한을 적용합니다. 추가 개선안으로는 민감정보를 제외한 동일 요청에 짧은 TTL 캐시를 적용하거나, 반복 설명을 전처리해 흠집·구성품 같은 사실을 보존하면서 입력을 줄이는 방법이 있습니다. 캐시와 요약 전처리는 설계 후보입니다.
+
+## Vercel 배포와 환경변수
+
+현재 운영본은 Vercel CLI로 배포했습니다. GitHub에서 새 프로젝트를 가져오는 경우 저장소 루트를 선택합니다. vercel.json이 public 정적 파일과 Python 함수 실행 시간을 지정합니다.
+
+1. 프로젝트의 Settings → Environment Variables에서 이름을 COPA_API_KEY로 지정하고 발급받은 키를 값으로 등록합니다.
+2. 사용할 환경을 선택합니다. 기본 모델을 바꿀 때는 같은 환경에 COPA_MODEL도 등록합니다.
+3. 환경변수를 저장한 뒤 해당 환경으로 배포합니다. 장터가 열리는지 확인하고 작성 화면에서 판매글을 생성합니다.
+
+| 환경 | 설정 |
+| --- | --- |
+| 로컬 | .env에 개발용 키를 설정합니다. |
+| Preview | 미리보기 배포에서 AI를 시험할 때 Preview 환경에 테스트용 키를 등록합니다. |
+| Production | 운영 환경에 운영용 키를 등록합니다. |
+
+실제 키는 서버 환경변수에서만 읽고, Git에는 빈 값의 .env.example을 둡니다. 키가 노출되면 Copa에서 노출된 키를 폐기하고 새 키를 발급합니다. Vercel의 해당 환경과 로컬 .env를 교체한 뒤 재배포하고 AI 생성을 다시 확인합니다. 노출 경로와 기간을 확인하고, Git 이력이나 공유 로그에 남은 키도 제거합니다.
+
+### 배포 문제 진단
+
+1. 빌드가 실패하면 Vercel Deployments에서 해당 배포의 Build Logs를 열고 첫 오류를 확인합니다. 페이지가 열리고 AI만 실패하면 Runtime Logs에서 /api/listing 요청의 상태와 오류 시간을 확인합니다.
+2. 브라우저 개발자 도구의 Console에서 스크립트 오류를 보고, Network에서 /api/listing의 HTTP 상태와 JSON 응답을 확인합니다.
+3. 실패한 배포가 Preview인지 Production인지 확인한 뒤 해당 환경의 COPA_API_KEY와 COPA_MODEL 설정을 검토합니다. 키 값은 로그나 캡처에 출력하지 않습니다.
+4. 환경변수나 코드를 수정하고 재배포합니다. 새 배포 URL에서 같은 입력으로 결과를 다시 확인합니다.
+
+[환경변수 설정 문서](https://vercel.com/docs/environment-variables) · [Vercel 런타임 로그 문서](https://vercel.com/docs/logs/runtime)
+
+현재 Python API는 표준 라이브러리의 BaseHTTPRequestHandler를 사용합니다. FastAPI 등으로 옮기면 요청 처리와 로컬 실행 및 배포 설정을 바꿔야 합니다. POST /api/listing과 응답 JSON 계약을 유지하면 작성 화면은 그대로 사용할 수 있습니다. 다른 배포 환경으로 옮길 때는 함수 실행 시간과 환경변수 적용 범위를 다시 확인합니다.
+
+## 화면과 제출 자료
 
 [서비스 기획서](docs/plan.md) · [AI 코딩 도구 사용 기록](docs/ai-worklog.md)
 
-[데스크톱 화면](docs/screenshots/desktop.png) · [모바일 화면](docs/screenshots/mobile.png) · [실제 AI 생성 결과](docs/screenshots/ai-result.png)
+### 운영 화면
+
+![Vercel에서 열린 데스크톱 중고장터](docs/screenshots/vercel-desktop.png)
+
+모바일 화면은 Chrome에서 iPhone 13과 Pixel 7을 에뮬레이션해 캡처했습니다. 두 화면에서 작성 폼과 초안이 한 열로 배치되는 것을 확인했습니다.
+
+[iPhone 13 작성 화면](docs/screenshots/vercel-iphone.png) · [Pixel 7 작성 화면](docs/screenshots/vercel-android.png)
+
+### AI 생성 상태
+
+로딩과 성공 화면은 운영 API를 실제 호출해 캡처했습니다. 실패 화면은 브라우저 테스트에서 502 응답을 재현해 캡처했습니다.
+
+[생성 중](docs/screenshots/vercel-loading.png) · [생성 성공](docs/screenshots/vercel-success.png) · [생성 실패](docs/screenshots/vercel-error.png)

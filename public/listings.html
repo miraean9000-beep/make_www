@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>중고장터 — 중고글 뚝딱</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/listings.js" type="module"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/listings.html"><span aria-hidden="true">↻</span> 뚝딱마켓</a>
+      <nav aria-label="주 메뉴">
+        <a id="market-link" href="/listings.html" aria-current="page">중고장터</a>
+        <a id="saved-link" href="#saved">내 판매글</a>
+        <a class="button" href="/#write">+ 판매글 쓰기</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap listings-page">
+    <section id="market-view" aria-labelledby="market-title">
+      <div class="market-banner">
+        <p class="eyebrow">중고장터</p>
+        <h1 id="market-title">필요한 물건을 찾아보세요</h1>
+        <label class="market-search" for="product-search">상품 검색
+          <input id="product-search" type="search" placeholder="상품명, 카테고리, 지역 검색">
+        </label>
+      </div>
+      <div class="market-toolbar">
+        <div class="market-filters" role="group" aria-label="상품 카테고리">
+          <button type="button" data-category="" aria-pressed="true">전체</button>
+          <button type="button" data-category="디지털" aria-pressed="false">디지털</button>
+          <button type="button" data-category="가구" aria-pressed="false">가구</button>
+          <button type="button" data-category="도서" aria-pressed="false">도서</button>
+          <button type="button" data-category="생활" aria-pressed="false">생활</button>
+        </div>
+      </div>
+      <div class="market-heading">
+        <h2>중고 상품</h2>
+        <span id="product-count" role="status">6개</span>
+      </div>
+      <p class="note">예시 상품과 이 브라우저에서 등록한 상품을 볼 수 있어요.</p>
+      <div class="product-grid" id="product-grid">
+        <details class="product-card" data-product="닌텐도 스위치 OLED 디지털 마포구 연남동">
+          <summary>
+            <div class="product-image console"><svg aria-hidden="true"><use href="/products.svg#console"/></svg></div>
+            <div class="product-info"><span class="product-name">닌텐도 스위치 OLED</span><strong>220,000원</strong><small>마포구 연남동 · 직거래</small></div>
+          </summary>
+          <p>본체 뒤쪽에 작은 긁힘이 있어요. 독과 충전기가 포함되어 있고 박스는 없어요.</p>
+        </details>
+        <details class="product-card" data-product="원목 식탁 의자 2개 가구 성동구 성수동">
+          <summary>
+            <div class="product-image chair"><svg aria-hidden="true"><use href="/products.svg#chair"/></svg></div>
+            <div class="product-info"><span class="product-name">원목 식탁 의자 2개</span><strong>50,000원</strong><small>성동구 성수동 · 직접 수령</small></div>
+          </summary>
+          <p>2년 사용했고 다리에 생활 흠집이 있어요. 두 개 함께 판매합니다.</p>
+        </details>
+        <details class="product-card" data-product="파이썬 입문서 도서 관악구 봉천동">
+          <summary>
+            <div class="product-image book"><svg aria-hidden="true"><use href="/products.svg#book"/></svg></div>
+            <div class="product-info"><span class="product-name">파이썬 입문서</span><strong>8,000원</strong><small>관악구 봉천동 · 택배 가능</small></div>
+          </summary>
+          <p>앞부분 약 20쪽에 연필 밑줄이 있어요. 책 한 권이고 택배로도 거래할 수 있어요.</p>
+        </details>
+        <details class="product-card" data-product="무선 헤드폰 디지털 영등포구 문래동">
+          <summary>
+            <div class="product-image headphones"><svg aria-hidden="true"><use href="/products.svg#headphones"/></svg></div>
+            <div class="product-info"><span class="product-name">무선 헤드폰</span><strong>45,000원</strong><small>영등포구 문래동 · 직거래</small></div>
+          </summary>
+          <p>충전 케이블과 파우치를 함께 드려요. 이어패드에 사용감이 조금 있어요.</p>
+        </details>
+        <details class="product-card" data-product="테이블 조명 생활 용산구 이태원동">
+          <summary>
+            <div class="product-image lamp"><svg aria-hidden="true"><use href="/products.svg#lamp"/></svg></div>
+            <div class="product-info"><span class="product-name">테이블 조명</span><strong>18,000원</strong><small>용산구 이태원동 · 직거래</small></div>
+          </summary>
+          <p>따뜻한 색의 전구를 끼워서 드려요. 받침에 작은 스크래치가 있어요.</p>
+        </details>
+        <details class="product-card" data-product="스테인리스 주전자 생활 동작구 상도동">
+          <summary>
+            <div class="product-image kettle"><svg aria-hidden="true"><use href="/products.svg#kettle"/></svg></div>
+            <div class="product-info"><span class="product-name">스테인리스 주전자</span><strong>12,000원</strong><small>동작구 상도동 · 택배 가능</small></div>
+          </summary>
+          <p>용량은 1리터예요. 바닥에 사용 흔적이 있고 뚜껑도 같이 드려요.</p>
+        </details>
+      </div>
+      <template id="registered-product">
+        <details class="product-card registered-product" data-product>
+          <summary>
+            <div class="product-image product-placeholder">
+              <svg aria-hidden="true"><use href="/products.svg#default-product"/></svg>
+              <img alt="" hidden>
+            </div>
+            <div class="product-info"><span class="product-name"></span><strong></strong><small></small></div>
+          </summary>
+          <p></p>
+        </details>
+      </template>
+      <p id="no-products" class="panel" hidden>검색 조건에 맞는 상품이 없어요.</p>
+    </section>
+    <section id="saved-view" aria-labelledby="saved-title" hidden>
+      <div class="section-heading"><h1 id="saved-title">내 판매글</h1></div>
+      <div class="panel">
+        <p class="note">이 브라우저에서 장터에 등록한 판매글이에요.</p>
+        <p id="listings-status" class="status" role="status">저장한 판매글이 아직 없어요.</p>
+        <div id="saved-listings"></div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap">뚝딱마켓</div></footer>
+</body>
+</html>

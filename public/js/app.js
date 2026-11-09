@@ -1,26 +1,6 @@
-const examples = {
-  console: {
-    item: "닌텐도 스위치 OLED",
-    condition: "본체 뒷면에 작은 긁힘이 있습니다. 원래 박스는 없습니다.",
-    price: "22만 원",
-    delivery: "직거래",
-    details: "독과 충전기 포함"
-  },
-  chair: {
-    item: "원목 식탁 의자 2개",
-    condition: "사용한 지 2년 정도 됐고 다리에 생활 흠집이 있습니다.",
-    price: "두 개 5만 원",
-    delivery: "직접 수령",
-    details: "두 개 함께 판매합니다."
-  },
-  book: {
-    item: "파이썬 입문서",
-    condition: "앞부분 20쪽 정도에 연필 밑줄이 있습니다.",
-    price: "8천 원",
-    delivery: "택배 가능",
-    details: "책 한 권입니다."
-  }
-};
+import {readListings, storageKey} from "./listing-storage.js";
+
+if (!location.hash || location.hash === "#listings") location.replace("/listings.html");
 
 const form = document.querySelector("#listing-form");
 const submit = form.querySelector("button");
@@ -30,22 +10,34 @@ const body = document.querySelector("#body");
 const draft = document.querySelector("#draft");
 const checklist = document.querySelector("#checklist");
 const copyStatus = document.querySelector("#copy-status");
-const exampleButtons = document.querySelectorAll("[data-example]");
+const save = document.querySelector("#save");
+const photo = document.querySelector("#photo");
+let draftProduct = {};
+
+async function preparePhoto(file) {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 10 * 1024 * 1024) {
+    throw new Error("10MB 이하의 JPG, PNG, WebP 사진을 선택해 주세요.");
+  }
+
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, 800 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL("image/jpeg", 0.8);
+  } finally {
+    bitmap.close();
+  }
+}
 
 function showStatus(message, error = false) {
   status.textContent = message;
   status.classList.toggle("error", error);
-}
-
-for (const button of exampleButtons) {
-  button.addEventListener("click", () => {
-    for (const [name, value] of Object.entries(examples[button.dataset.example])) {
-      form.elements.namedItem(name).value = value;
-    }
-    showStatus("예시를 불러왔습니다. 생성 버튼을 눌러보세요.");
-    document.querySelector("#item").focus();
-    document.querySelector("#write").scrollIntoView();
-  });
 }
 
 form.addEventListener("submit", async (event) => {
@@ -61,7 +53,7 @@ form.addEventListener("submit", async (event) => {
   }
 
   submit.disabled = true;
-  for (const button of exampleButtons) button.disabled = true;
+  save.disabled = true;
   showStatus("AI가 판매글을 작성하는 중입니다.");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 29000);
@@ -78,6 +70,7 @@ form.addEventListener("submit", async (event) => {
     }
     title.value = result.title;
     body.value = result.body;
+    draftProduct = {price: values.price, delivery: values.delivery};
     checklist.replaceChildren(...result.checklist.map((line) => {
       const item = document.createElement("li");
       item.textContent = line;
@@ -99,7 +92,7 @@ form.addEventListener("submit", async (event) => {
   } finally {
     clearTimeout(timer);
     submit.disabled = false;
-    for (const button of exampleButtons) button.disabled = false;
+    save.disabled = false;
   }
 });
 
@@ -110,4 +103,54 @@ document.querySelector("#copy").addEventListener("click", async () => {
   } catch {
     copyStatus.textContent = "자동 복사에 실패했습니다. 제목과 본문을 직접 선택해 복사해 주세요.";
   }
+});
+
+save.addEventListener("click", async () => {
+  const listingTitle = title.value.trim();
+  const listingBody = body.value.trim();
+  if (!listingTitle || !listingBody) {
+    copyStatus.textContent = "제목과 본문을 모두 입력한 뒤 저장해 주세요.";
+    (listingTitle ? body : title).focus();
+    return;
+  }
+
+  save.disabled = true;
+  submit.disabled = true;
+  photo.disabled = true;
+  try {
+    const file = photo.files[0];
+    let photoUrl = "";
+    if (file) {
+      try {
+        photoUrl = await preparePhoto(file);
+      } catch (error) {
+        copyStatus.textContent = error instanceof DOMException
+          ? "사진을 열지 못했어요. 다른 사진을 선택해 주세요."
+          : error.message;
+        return;
+      }
+    }
+    const listing = {id: crypto.randomUUID(), title: listingTitle, body: listingBody, ...draftProduct, photoUrl};
+    const listings = [listing, ...readListings()];
+    localStorage.setItem(storageKey, JSON.stringify(listings));
+  } catch {
+    copyStatus.textContent = "이 브라우저에 판매글을 저장하지 못했어요.";
+    return;
+  } finally {
+    save.disabled = false;
+    submit.disabled = false;
+    photo.disabled = false;
+  }
+
+  window.alert("저장되었습니다");
+  form.reset();
+  draftProduct = {};
+  title.value = "";
+  body.value = "";
+  checklist.replaceChildren();
+  draft.hidden = true;
+  document.querySelector("#empty").hidden = false;
+  copyStatus.textContent = "";
+  showStatus("");
+  form.elements.namedItem("item").focus();
 });
