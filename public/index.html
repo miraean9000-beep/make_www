@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="중고 물건의 정보를 입력하고 판매글 제목과 본문을 작성하세요.">
+  <title>중고글 뚝딱 — AI 판매글 작성기</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#home"><span aria-hidden="true">↻</span> 중고글 뚝딱</a>
+      <nav aria-label="주 메뉴">
+        <a href="#home">홈</a><a href="#write">판매글 만들기</a><a href="#examples">예시</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="home" class="hero" aria-labelledby="intro">
+      <div>
+        <p class="eyebrow">AI 중고거래 판매글 작성기</p>
+        <h1 id="intro">안 쓰는 물건,<br>판매글은 <em>뚝딱.</em></h1>
+        <p class="lead">이름과 사용 상태를 알려주세요. AI가 제목과 본문을 정리하고, 올리기 전에 확인할 정보도 짚어드려요.</p>
+        <a class="button" href="#write">판매글 만들기 <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 440 270" fill="none">
+          <circle cx="222" cy="134" r="119" fill="#efdfab"/>
+          <path d="M52 203c79 40 264 46 333 4" stroke="#f9f0d4" stroke-width="19" stroke-linecap="round"/>
+          <g transform="rotate(-9 200 142)">
+            <rect x="100" y="53" width="207" height="158" rx="19" fill="#493788" opacity=".16"/>
+            <rect x="94" y="43" width="207" height="158" rx="19" fill="#fffdf7" stroke="#332450" stroke-width="3"/>
+            <rect x="114" y="64" width="69" height="72" rx="12" fill="#e6dcfa"/>
+            <path d="m129 100 20-12 20 12v18l-20 12-20-12v-18Zm0 0 20 12 20-12m-20 12v18m-10-36 20 12" stroke="#6b46ac" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M198 76h77m-77 16h54m-54 23h65m-149 46h151m-151 16h105" stroke="#d0c6e2" stroke-width="7" stroke-linecap="round"/>
+          </g>
+          <g transform="rotate(12 310 162)">
+            <rect x="258" y="123" width="103" height="82" rx="16" fill="#ad8cec" stroke="#332450" stroke-width="3"/>
+            <path d="m282 166 16 15 37-37" stroke="#fffdf7" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <path d="M347 52v29m-14-14h28M76 122v20m-10-10h20" stroke="#6940a5" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+    <section id="write" aria-labelledby="write-title">
+      <div class="section-heading"><p class="eyebrow">판매글 작성</p><h2 id="write-title">어떤 물건을 판매하나요?</h2></div>
+      <div class="workspace">
+        <form id="listing-form" class="panel" novalidate>
+          <div class="panel-head"><h3>물건 정보</h3><span>필수 항목 2개</span></div>
+          <label for="item">물건 이름 <span class="required">*</span></label>
+          <input id="item" name="item" required maxlength="80" placeholder="예: 닌텐도 스위치 OLED">
+          <label for="condition">사용 상태 <span class="required">*</span></label>
+          <textarea id="condition" name="condition" required maxlength="500" rows="3" placeholder="예: 본체 뒷면에 긁힘이 있고, 원래 박스는 없어요."></textarea>
+          <div class="form-row">
+            <div><label for="price">희망 가격</label><input id="price" name="price" maxlength="30" placeholder="예: 22만 원"></div>
+            <div><label for="delivery">거래 방법</label><input id="delivery" name="delivery" maxlength="80" placeholder="예: 직거래"></div>
+          </div>
+          <label for="details">구성품 및 기타 정보</label>
+          <textarea id="details" name="details" maxlength="500" rows="2" placeholder="예: 독과 충전기 포함"></textarea>
+          <p class="note">연락처나 상세 주소는 입력하지 마세요.</p>
+          <button class="button submit" type="submit">판매글 생성하기 <span aria-hidden="true">✦</span></button>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+        </form>
+        <section id="result" class="panel result" aria-labelledby="result-title">
+          <div class="panel-head"><h3 id="result-title">판매글 초안</h3><span>편집 및 복사</span></div>
+          <div id="empty" class="empty"><span aria-hidden="true">✦</span><strong>판매글이 여기에 표시됩니다</strong><p>물건 정보를 입력하고 생성 버튼을 눌러보세요.</p></div>
+          <div id="draft" hidden>
+            <label for="title">제목</label><input id="title">
+            <label for="body">본문</label><textarea id="body" rows="8"></textarea>
+            <div id="checks" class="checks"><h4>올리기 전 확인</h4><ul id="checklist"></ul></div>
+            <button id="copy" class="button secondary" type="button">판매글 복사</button>
+            <p id="copy-status" class="status" role="status"></p>
+          </div>
+        </section>
+      </div>
+    </section>
+    <section id="examples" aria-labelledby="examples-title">
+      <div class="section-heading"><p class="eyebrow">예시 입력</p><h2 id="examples-title">무엇부터 적을지 모르겠다면</h2></div>
+      <div class="examples">
+        <button type="button" data-example="console"><span>게임기</span><strong>닌텐도 스위치 OLED</strong><small>예시 불러오기 ↗</small></button>
+        <button type="button" data-example="chair"><span>가구</span><strong>원목 식탁 의자 2개</strong><small>예시 불러오기 ↗</small></button>
+        <button type="button" data-example="book"><span>도서</span><strong>파이썬 입문서</strong><small>예시 불러오기 ↗</small></button>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap">중고글 뚝딱 <span>올리기 전에 생성된 내용과 상품 상태를 확인해 주세요.</span></div></footer>
+</body>
+</html>
