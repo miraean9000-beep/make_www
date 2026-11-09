@@ -1,6 +1,8 @@
 import {readListings, storageKey} from "./listing-storage.js";
 
-if (!location.hash || location.hash === "#listings") location.replace("/listings.html");
+if ((location.pathname === "/" && !location.hash) || location.hash === "#listings") {
+  location.replace("/listings.html");
+}
 
 const form = document.querySelector("#listing-form");
 const submit = form.querySelector("button");

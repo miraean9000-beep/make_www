@@ -13,8 +13,8 @@
       <a class="brand" href="/listings.html"><span aria-hidden="true">↻</span> 뚝딱마켓</a>
       <nav aria-label="주 메뉴">
         <a id="market-link" href="/listings.html" aria-current="page">중고장터</a>
-        <a id="saved-link" href="/listings.html#saved">내 판매글</a>
-        <a class="button" href="/#write">+ 판매글 쓰기</a>
+        <a href="/saved.html">내 판매글</a>
+        <a class="button" href="/index.html">+ 판매글 쓰기</a>
       </nav>
     </div>
   </header>
@@ -41,6 +41,7 @@
         <span id="product-count" role="status">6개</span>
       </div>
       <p class="note">예시 상품과 이 브라우저에서 등록한 상품을 볼 수 있어요.</p>
+      <p id="market-storage-error" class="status error" role="status" hidden>이 브라우저에서 등록한 상품을 불러오지 못했어요.</p>
       <div class="product-grid" id="product-grid">
         <article class="product-card" data-product="닌텐도 스위치 OLED 디지털 마포구 연남동">
           <a class="product-card-link" href="?product=sample-console">
@@ -98,14 +99,6 @@
         </article>
       </template>
       <p id="no-products" class="panel" hidden>검색 조건에 맞는 상품이 없어요.</p>
-    </section>
-    <section id="saved-view" aria-labelledby="saved-title" hidden>
-      <div class="section-heading"><h1 id="saved-title">내 판매글</h1></div>
-      <div class="panel">
-        <p class="note">이 브라우저에서 장터에 등록한 판매글이에요.</p>
-        <p id="listings-status" class="status" role="status">저장한 판매글이 아직 없어요.</p>
-        <div id="saved-listings"></div>
-      </div>
     </section>
     <section id="product-view" aria-label="상품 상세" hidden>
       <a class="back-to-market" href="/listings.html">← 중고상품 목록</a>

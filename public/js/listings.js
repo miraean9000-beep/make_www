@@ -1,11 +1,6 @@
 import {readListings, storageKey} from "./listing-storage.js";
 
-const savedListings = document.querySelector("#saved-listings");
-const listingsStatus = document.querySelector("#listings-status");
 const marketView = document.querySelector("#market-view");
-const savedView = document.querySelector("#saved-view");
-const marketLink = document.querySelector("#market-link");
-const savedLink = document.querySelector("#saved-link");
 const search = document.querySelector("#product-search");
 const filters = document.querySelectorAll("[data-category]");
 const productGrid = document.querySelector("#product-grid");
@@ -21,16 +16,9 @@ const purchaseReview = document.querySelector("#purchase-review");
 const purchaseResult = document.querySelector("#purchase-result");
 let category = "";
 
-function showView() {
-  const showSaved = productParam === null && location.hash === "#saved";
-  productView.hidden = productParam === null;
-  marketView.hidden = showSaved || !productView.hidden;
-  savedView.hidden = !showSaved;
-  const currentLink = showSaved ? savedLink : marketLink;
-  const otherLink = showSaved ? marketLink : savedLink;
-  currentLink.setAttribute("aria-current", "page");
-  otherLink.removeAttribute("aria-current");
-}
+if (productParam === null && location.hash === "#saved") location.replace("/saved.html");
+productView.hidden = productParam === null;
+marketView.hidden = !productView.hidden;
 
 function showProduct() {
   if (productParam === null) return;
@@ -89,23 +77,12 @@ for (const filter of filters) {
   });
 }
 search.addEventListener("input", filterProducts);
-window.addEventListener("hashchange", showView);
-showView();
 
 function refreshListings() {
+  document.querySelector("#market-storage-error").hidden = true;
   for (const card of productGrid.querySelectorAll(".registered-product")) card.remove();
   try {
     const listings = readListings();
-    savedListings.replaceChildren(...listings.map((listing) => {
-      const entry = document.createElement("details");
-      entry.className = "saved-listing";
-      const heading = document.createElement("summary");
-      heading.textContent = listing.title;
-      const content = document.createElement("p");
-      content.textContent = listing.body;
-      entry.append(heading, content);
-      return entry;
-    }));
     productGrid.prepend(...listings.map((listing) => {
       const card = productTemplate.content.firstElementChild.cloneNode(true);
       card.querySelector("a").href = `?product=${encodeURIComponent(`listing-${listing.id}`)}`;
@@ -127,12 +104,8 @@ function refreshListings() {
       card.querySelector("p").textContent = listing.body;
       return card;
     }));
-    listingsStatus.textContent = "저장한 판매글이 아직 없어요.";
-    listingsStatus.hidden = listings.length > 0;
   } catch {
-    savedListings.replaceChildren();
-    listingsStatus.hidden = false;
-    listingsStatus.textContent = "이 브라우저에서 저장한 판매글을 불러오지 못했어요.";
+    document.querySelector("#market-storage-error").hidden = false;
   }
   filterProducts();
   showProduct();

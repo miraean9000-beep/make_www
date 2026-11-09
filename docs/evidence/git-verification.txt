@@ -1,0 +1,5 @@
+Checked at 2026-11-09T16:06:31+09:00 (KST)
+Scope: 3 commits reachable from local Git refs before the evidence commit.
+Current local Copa key exact-match search: no matches.
+Tracked .env files in history other than .env.example: none.
+This check does not cover other keys or external logs.

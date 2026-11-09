@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>내 판매글 — 뚝딱마켓</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/saved.js" type="module"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/listings.html"><span aria-hidden="true">↻</span> 뚝딱마켓</a>
+      <nav aria-label="주 메뉴">
+        <a href="/listings.html">중고장터</a>
+        <a href="/saved.html" aria-current="page">내 판매글</a>
+        <a class="button" href="/index.html">+ 판매글 쓰기</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap listings-page">
+    <section id="saved-view" aria-labelledby="saved-title">
+      <div class="section-heading"><h1 id="saved-title">내 판매글</h1></div>
+      <div class="panel">
+        <p class="note">이 브라우저에서 장터에 등록한 판매글이에요.</p>
+        <p id="listings-status" class="status" role="status">저장한 판매글이 아직 없어요.</p>
+        <div id="saved-listings"></div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap">뚝딱마켓</div></footer>
+</body>
+</html>

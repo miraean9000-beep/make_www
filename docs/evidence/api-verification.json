@@ -1,0 +1,178 @@
+[
+  {
+    "case": "정상 입력",
+    "target": "Vercel 운영",
+    "timestampKST": "2026-11-09T16:06:29+09:00",
+    "request": {
+      "method": "POST",
+      "url": "https://junggo-ttukttak.vercel.app/api/listing",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "item": "독서등",
+        "condition": "정상 작동하며 받침에 작은 흠집이 있어요.",
+        "price": "1만 원",
+        "delivery": "직거래"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      },
+      "body": {
+        "title": "독서등 판매합니다",
+        "body": "정상 작동하는 독서등입니다.\n\n상태: 받침에 작은 흠집이 있습니다.\n가격: 1만 원\n거래방식: 직거래\n\n관심 있으신 분은 연락 주세요.",
+        "checklist": [
+          "독서등 타입(스탠드형/클립형/책상형 등)",
+          "전원 방식(콘센트/배터리 등)",
+          "구매 시기",
+          "사용 기간",
+          "흠집 외 다른 손상 여부"
+        ]
+      }
+    }
+  },
+  {
+    "case": "공백 입력",
+    "target": "Vercel 운영",
+    "timestampKST": "2026-11-09T16:06:30+09:00",
+    "request": {
+      "method": "POST",
+      "url": "https://junggo-ttukttak.vercel.app/api/listing",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "item": "   ",
+        "condition": "정상 작동하며 받침에 작은 흠집이 있어요.",
+        "price": "1만 원",
+        "delivery": "직거래"
+      }
+    },
+    "response": {
+      "status": 400,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      },
+      "body": {
+        "error": "물건 이름과 사용 상태를 입력해 주세요."
+      }
+    }
+  },
+  {
+    "case": "이름 81자",
+    "target": "Vercel 운영",
+    "timestampKST": "2026-11-09T16:06:30+09:00",
+    "request": {
+      "method": "POST",
+      "url": "https://junggo-ttukttak.vercel.app/api/listing",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "item": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가",
+        "condition": "정상 작동하며 받침에 작은 흠집이 있어요.",
+        "price": "1만 원",
+        "delivery": "직거래"
+      }
+    },
+    "response": {
+      "status": 400,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      },
+      "body": {
+        "error": "입력란의 글자 수를 확인해 주세요."
+      }
+    }
+  },
+  {
+    "case": "키 누락",
+    "target": "로컬 함수 · 키 누락 재현",
+    "timestampKST": "2026-11-09T16:06:30+09:00",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:57432/api/listing",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "item": "독서등",
+        "condition": "정상 작동하며 받침에 작은 흠집이 있어요.",
+        "price": "1만 원",
+        "delivery": "직거래"
+      }
+    },
+    "response": {
+      "status": 503,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      },
+      "body": {
+        "error": "AI 서비스 설정을 확인하는 중입니다. 잠시 후 다시 시도해 주세요."
+      }
+    }
+  },
+  {
+    "case": "모델 응답 형식 오류",
+    "target": "로컬 함수 · Copa 응답 오류 모의",
+    "timestampKST": "2026-11-09T16:06:30+09:00",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:57432/api/listing",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "item": "독서등",
+        "condition": "정상 작동하며 받침에 작은 흠집이 있어요.",
+        "price": "1만 원",
+        "delivery": "직거래"
+      }
+    },
+    "response": {
+      "status": 502,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      },
+      "body": {
+        "error": "판매글을 생성하지 못했습니다. 잠시 후 다시 시도해 주세요."
+      }
+    }
+  },
+  {
+    "case": "Copa 응답 지연",
+    "target": "로컬 함수 · Copa 지연 모의",
+    "timestampKST": "2026-11-09T16:06:30+09:00",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:57432/api/listing",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "item": "독서등",
+        "condition": "정상 작동하며 받침에 작은 흠집이 있어요.",
+        "price": "1만 원",
+        "delivery": "직거래"
+      }
+    },
+    "response": {
+      "status": 504,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      },
+      "body": {
+        "error": "AI 응답이 늦어지고 있습니다. 잠시 후 다시 시도해 주세요."
+      }
+    }
+  }
+]
