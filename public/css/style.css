@@ -71,16 +71,22 @@ nav a.button:hover, nav a.button[aria-current="page"] { color: white; }
 .market-heading span, .product-info small { color: var(--muted); }
 .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); gap: 16px; align-items: start; }
 .product-card { background: white; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-.product-card summary { display: block; cursor: pointer; }
-.product-card summary::-webkit-details-marker { display: none; }
-.product-card summary:focus-visible { outline-offset: -3px; }
+.product-card-link { display: block; }
+.product-card-link:focus-visible { outline-offset: -3px; }
 .product-card:hover { border-color: #c88862; }
-.product-card p { margin: 0; padding: 12px 14px; border-top: 1px solid var(--line); font-size: .9rem; }
 .product-image { aspect-ratio: 16 / 10; background: #e4ede9; }
 .product-placeholder { background: #f8eee0; }
 .product-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .registered-product { overflow-wrap: anywhere; }
-.registered-product p { white-space: pre-wrap; }
+.back-to-market { display: inline-block; margin: 24px 0 14px; color: var(--accent); font-weight: 700; }
+.product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; overflow-wrap: anywhere; }
+.product-detail .product-image { border-radius: 14px; overflow: hidden; }
+.product-detail h2 { font-size: 1.15rem; }
+#detail-price { margin: 10px 0 4px; font-size: 1.5rem; font-weight: 800; }
+#detail-description { white-space: pre-wrap; }
+#purchase-dialog { width: min(440px, calc(100% - 32px)); border: 1px solid var(--line); border-radius: 16px; padding: 24px; color: inherit; }
+#purchase-dialog::backdrop { background: #27241e88; }
+.purchase-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .product-image svg { width: 100%; height: 100%; display: block; }
 .product-image.chair { background: #f2e4d4; }
 .product-image.book { background: #e7edda; }
@@ -95,7 +101,7 @@ nav a.button:hover, nav a.button[aria-current="page"] { color: white; }
 .saved-listing p { margin: 8px 0 0; white-space: pre-wrap; }
 footer { border-top: 1px solid var(--line); padding-block: 20px; font-weight: 700; }
 @media (max-width: 720px) {
-  .workspace { grid-template-columns: 1fr; }
+  .workspace, .product-detail { grid-template-columns: 1fr; }
 }
 @media (max-width: 430px) {
   .wrap { width: calc(100% - 28px); }
